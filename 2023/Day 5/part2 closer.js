@@ -7,7 +7,7 @@ let og_input = fs.readFileSync(filename, 'utf-8');
 let input_array = og_input.split('\n');
 input_array = input_array.filter(val => val.length > 0);
 
-// PART 2 - Wrong answers: 34062605 (too high), 23043868 (too low)
+// PART 2 - Wrong answers: 34062605 (too high)
 let seedsLine = input_array[0].replace("seeds: ", "");
 let seedVals = seedsLine.split(" ");
 let seedGroups = [];
@@ -18,12 +18,10 @@ for (let i = 0; i < seedVals.length; i+=2) {
     end: parseInt(seedVals[i]) + parseInt(seedVals[i+1]) - 1,
     convertedValueStart: parseInt(seedVals[i]),
     convertedValueEnd: parseInt(seedVals[i]) + parseInt(seedVals[i+1]) - 1,
-    range: parseInt(seedVals[i+1]),
-    startOnMap: 0,
+    range: parseInt(seedVals[i+1])
   });
 }
-// seedGroups.sort((groupA, groupB) => groupA.start - groupB.start);
-// console.log("SEED GROUPS", seedGroups);
+seedGroups.sort((groupA, groupB) => groupA.start - groupB.start);
 
 let lowest = 99999999999999999n;
 let maps = {};
@@ -45,19 +43,16 @@ for (let i = 1; i < input_array.length; i++) {
   }
 }
 
-// console.log("MAPS", maps);
-
-for (let s = 0; s < seedGroups.length; s++) {
-  let seed = seedGroups[s];
-  let mIndex = 0;
-  for (let mKey in maps) {
-    let map = maps[mKey];
-    for (let m = 0; m < map.length; m++) {
-      let mapRow = map[m];
+for (let mKey in maps) {
+  let map = maps[mKey];
+  for (let m = 0; m < map.length; m++) {
+    let mapRow = map[m];
+    for (sKey in seedGroups) {
+      let seed = seedGroups[sKey];
       // If the range starts in the map row or if the range ends in the map row, we want to jump into it
-      if (seed.startOnMap <= mIndex && ((seed.end >= mapRow.sourceStart && seed.end <= mapRow.sourceEnd) || (seed.start >= mapRow.sourceStart && seed.start <= mapRow.sourceEnd))) {
-        // console.log("Seed", seed);
-        // console.log("Map Row", mapRow);
+      if ((seed.end >= mapRow.sourceStart && seed.end <= mapRow.sourceEnd) || (seed.start >= mapRow.sourceStart && seed.start <= mapRow.sourceEnd)) {
+        console.log("Seed", seed);
+        console.log("Map Row", mapRow);
         let diffStart = mapRow.range - ((mapRow.sourceStart + mapRow.range) - seed.start);
         let diffEnd = mapRow.range - ((mapRow.sourceEnd + mapRow.range) - seed.end);
         seed.convertedValueStart = mapRow.destStart + diffStart;
@@ -71,12 +66,10 @@ for (let s = 0; s < seedGroups.length; s++) {
             end: mapRow.sourceStart - 1,
             convertedValueStart: seed.start,
             convertedValueEnd: mapRow.sourceStart - 1,
-            range: (mapRow.sourceStart - 1) - seed.start,
-            startOnMap: mIndex
+            range: (mapRow.sourceStart - 1) - seed.start
           });
-          // console.log("Added New Seed", seedGroups[seedGroups.length-1]);
-        }
-        if (seed.end > mapRow.sourceEnd) {
+          console.log("Added New Seed", seedGroups[seedGroups.length-1]);
+        } else if (seed.end > mapRow.sourceEnd) {
           seed.convertedValueEnd = mapRow.destEnd;
           seedGroups.push({
             id: "seed group " + (seedGroups.length),
@@ -84,28 +77,22 @@ for (let s = 0; s < seedGroups.length; s++) {
             end: seed.end,
             convertedValueStart: mapRow.sourceEnd + 1,
             convertedValueEnd: seed.end,
-            range: seed.end - (mapRow.sourceEnd + 1),
-            startOnMap: mIndex
+            range: seed.end - (mapRow.sourceEnd + 1)
           });
-          seedGroups[s] = seed;
-          // console.log("Added New Seed", seedGroups[seedGroups.length-1]);
+          console.log("Added New Seed", seedGroups[seedGroups.length-1]);
         }
-        // console.log("Updated Seed", seed);
-        break;
+        console.log("Updated Seed", seed);
       }
     }
-    seed = {
-      id: seed.id,
-      start: seed.convertedValueStart,
-      end: seed.convertedValueEnd,
-      convertedValueStart: seed.convertedValueStart,
-      convertedValueEnd: seed.convertedValueEnd,
-      range: seed.range,
-      startOnMap: seed.startOnMap
-    };
-    mIndex++;
   }
-  // console.log("FINAL SEED VALUE", seed);
+  seedGroups = seedGroups.map(group => ({
+    id: group.id,
+    start: group.convertedValueStart,
+    end: group.convertedValueEnd,
+    convertedValueStart: group.convertedValueStart,
+    convertedValueEnd: group.convertedValueEnd,
+    range: group.range
+  }));
 }
 
 seedGroups = seedGroups.map(group => ({
@@ -119,7 +106,6 @@ seedGroups = seedGroups.map(group => ({
 
 for (let sKey in seedGroups) {
   let seed = seedGroups[sKey];
-  // console.log("SEED", seed);
   if (seed.start < lowest) {
     lowest = seed.start;
   }
