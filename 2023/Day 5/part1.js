@@ -1,7 +1,10 @@
 const day = 5;
 const use_example = true;
 
-const filename = 'Advent-of-code/2023/Day ' + day + '/' + (use_example ? 'example' : 'input') + '.txt';
+// EARLS INPUT
+const filename = 'Advent-of-code/2023/Day ' + day + '/' + (use_example ? 'earlsInput' : 'input') + '.txt';
+
+// const filename = 'Advent-of-code/2023/Day ' + day + '/' + (use_example ? 'example' : 'input') + '.txt';
 const fs = require('fs');
 let og_input = fs.readFileSync(filename, 'utf-8');
 let input_array = og_input.split('\n');
@@ -22,13 +25,13 @@ for (let i = 2; i < input_array.length; i++) {
     let destStart = parseInt(mapVals[0]);
     let range = parseInt(mapVals[2]);
     for (let sKey in seeds) {
-      console.log("SEED", sKey, seeds[sKey]);
+      // console.log("SEED", sKey, seeds[sKey]);
       if (seeds[sKey] >= sourceStart && seeds[sKey] <= sourceStart + range - 1) {
-        console.log("IS IN RANGE");
+        // console.log("IS IN RANGE");
         let diff = range - ((sourceStart + range) - seeds[sKey]);
-        console.log("DIFF", diff);
+        // console.log("DIFF", diff);
         changedValues[sKey] = destStart + diff;
-        console.log("NEW SEED VAL", changedValues[sKey]);
+        // console.log("NEW SEED VAL", changedValues[sKey]);
       }
     }
   } else {
@@ -37,7 +40,7 @@ for (let i = 2; i < input_array.length; i++) {
     }
     changedValues = {};
     for (let sKey in seeds) {
-      console.log("Seed " + sKey + " converted to " + seeds[sKey]);
+      // console.log("Seed " + sKey + " converted to " + seeds[sKey]);
     }
   }
 }

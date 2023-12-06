@@ -9,6 +9,7 @@ input_array = input_array.filter(val => val.length > 0);
 
 // PART 2
 // Wrong answers: 34062605 (too high), 23043868 (too low)
+// Correct answer: 34039469
 
 // Take the row of seeds and create an array of objects containing information about each range of seeds
 let seedsLine = input_array[0].replace("seeds: ", "");
@@ -94,9 +95,9 @@ for (let s = 0; s < seedGroups.length; s++) {
             range: seed.end - (mapRow.sourceEnd + 1),
             startOnMap: mIndex
           });
-          seedGroups[s] = seed;
           // console.log("Added New Seed", seedGroups[seedGroups.length-1]);
         }
+        seedGroups[s] = seed;
         // console.log("Updated Seed", seed);
         // Once a conversion happens, skip ahead to the next set of conversion maps
         break;
