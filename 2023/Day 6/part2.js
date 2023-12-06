@@ -6,11 +6,43 @@ const fs = require('fs');
 let og_input = fs.readFileSync(filename, 'utf-8');
 let input_array = og_input.split('\n');
 input_array = input_array.filter(val => val.length > 0);
+let times = input_array[0].replace('Time:', "").split(" ").filter(e => e !== "").join("");
+let distances = input_array[1].replace('Distance:', "").split(" ").filter(e => e !== "").join("");
 
-// PART 2
-let sum = 0;
-for (let i = 2; i < input_array.length; i++) {
+// PART 1
+// 1 ms -> 1mm / ms -> 6 mm
+// 2 ms -> 2mm / ms -> 10 mm
+// 3 ms -> 3mm / ms -> 12 mm
+// 4 ms -> 4mm / ms -> 12 mm
+// 5 ms -> 5mm / ms -> 10 mm
+// 6 ms -> 6mm / ms -> 6 mm
 
+// 15 ms 4-11 work 4 on each side
+// hit it on index 4
+// 8 possible solutions
+
+// 30 ms 11-19 work 11 on each side
+
+let total = 1;
+let time = parseInt(times);
+let distanceToBeat = parseInt(distances);
+let numWaysToBeat = 0;
+
+console.log("Time", time);
+console.log("Distance", distanceToBeat);
+
+for (let s = 1; s < time; s++) {
+  let newDist = (time - s) * s;
+  console.log("New Distnace", newDist);
+  if (newDist > distanceToBeat) {
+    numWaysToBeat = time - (s * 2) + 1;
+    console.log("Number of ways to beat", numWaysToBeat);
+    break;
+  }
 }
 
-console.log("ANSWER", sum);
+if (numWaysToBeat > 0) {
+  total = total * numWaysToBeat;
+}
+
+console.log("ANSWER", total);
